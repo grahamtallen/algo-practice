@@ -2,11 +2,41 @@ const walk = (
     graph: WeightedAdjacencyList,
     curr: number,
     needle: number,
-    seen: number[],
+    seen: boolean[],
     path: number[],
-): number[] => {};
+): boolean => {
+    if (seen[curr]) {
+        return false;
+    }
+
+    seen[curr] = true;
+
+    path.push(curr);
+    if (curr === needle) {
+        return true;
+    }
+
+    const list = graph[curr];
+    for (let i = 0; i < list.length; i++) {
+        const edge = list[i];
+        if (walk(graph, edge.to, needle, seen, path)) {
+            return true;
+        }
+    }
+
+    path.pop();
+    return false;
+};
 export default function dfs(
     graph: WeightedAdjacencyList,
     source: number,
     needle: number,
-): number[] | null {}
+): number[] | null {
+    const path: number[] = [];
+    const seen: boolean[] = [];
+    walk(graph, source, needle, seen, path);
+    if (path.length) {
+        return path;
+    }
+    return null;
+}
